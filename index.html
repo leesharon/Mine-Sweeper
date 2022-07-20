@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineSweeper</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="initGame()">
+    <div class="container">
+        <h1>Mine Sweeper</h1>
+        <button class="btn-lvl" onclick="changeLevel(this)">Beginner</button>
+        <button class="btn-lvl btn-hint" onclick="activateHint(this)">Hint<div class="hint">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></button>
+        <div class="timerDisplay">
+            00:00  
+        </div>
+        <span class="smiley" onclick="restartGame(this)">🙂</span>
+        <table>
+            <tbody class="board"></tbody>
+        </table>
+        <span class="lives">🧡 Left: 1</span>
+    </div>
+    <footer> &#169; All rights reserved to Lee Sharon </footer>
+    <script src="js/utils.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/mines.js"></script>
+    <script src="js/cell.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

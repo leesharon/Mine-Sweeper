@@ -1,0 +1,105 @@
+
+
+html, body {
+    min-height: 100%;
+    height: auto; 
+}
+
+body {
+    text-align: center;
+    font-size: 1.5em;
+    background-image: linear-gradient( to top, rgba(255, 255, 255, 0.594), #3F3241);
+    background-repeat: no-repeat;
+    background-size: auto; 
+    font-family: fantasy;
+}
+
+h1 {
+    color: rgb(32, 29, 29);
+    font-style: italic;
+    margin-bottom: 100px;
+}
+
+button:hover {
+    background-image: linear-gradient(#eeb76f, rgb(217, 174, 125));
+}
+
+.btn-lvl {
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+    margin-right: 15px;
+    background-image: linear-gradient(#F3A846, rgb(217, 174, 125));
+    font-family: fantasy;
+    font-size: 1em ;
+}
+
+.btn-hint {
+    width: 15%;
+}
+
+div.hint {
+    border-radius: 50%;
+    background-color: red;
+    display: inline-block;
+    font-size: 0.2em;
+    position: relative;
+    bottom: 5px;
+    margin-left: 8px;
+    transition: background-color 0.7s;
+    /* height: 5px; */
+}
+
+.timerDisplay {
+    display: inline-block;
+}
+
+.smiley {
+    display: block;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+table {
+    /* border-collapse: collapse; */
+    margin: auto;
+}
+
+.cell {
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px black solid;
+    width: 40px;
+    height: 40px;
+}
+
+.cell:hover {
+    background-color: #F3A846;
+}
+
+.hidden {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.594), #3f3042);
+}
+
+.shown {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.594), #a06faa);
+}
+
+.lives {
+    position: absolute;
+    right: 29%;
+    margin-top: 20px;
+}
+
+.mine {
+    background-image: linear-gradient(red, rgb(206, 161, 161));
+}
+
+footer {
+    position: fixed;
+    bottom: 40px;
+    left: 15%;
+}
