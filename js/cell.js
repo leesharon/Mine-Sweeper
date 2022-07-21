@@ -4,15 +4,47 @@ function cellClicked(elCell, i, j, ev) {
     // returns if game is over
     if (gGame.isOver) return
 
-    // if this is first click starts timer
+    // makes sure the user doesn't mess with the model while showing hint
+    if (gHintIntervalId) return
+
+    const cell = gBoard[i][j]
+    cell.i = i
+    cell.j = j
+
+    // On first click
     if (!gGame.isOn) {
+
+        // checks if user wants to set his own mines
+        if (gGame.userSetMines === true) {
+            gMineSet.play()
+            cell.isMine = true
+            gGame.manuallyPlacedMines++
+
+            var elMineCount = document.querySelector('.mines-set')
+            elMineCount.innerText = `Mines to Set: ${gLevel.mines - gGame.manuallyPlacedMines}`
+
+            if (gGame.manuallyPlacedMines === gLevel.mines) {
+                elMineCount.style.display = 'none'
+                gGame.userSetMines = false
+                gGame.manuallyPlacedMines = 0
+                startTimer()
+                setMinesNegsCount(gBoard)
+                gGame.isOn = true
+                return
+            } else return
+
+            // sets mines for 7 boom mode
+        } else if (gGame.is7Boom === true) {
+            place7BoomMines()
+            
+        } else {
+            placeRandomMines(gLevel.mines, i, j)
+        }
+
         startTimer()
-        placeRandomMines(gLevel.mines, i, j)
         setMinesNegsCount(gBoard)
         gGame.isOn = true
     }
-
-    const cell = gBoard[i][j]
 
     if (cell.isShown === true) return
 
@@ -39,11 +71,24 @@ function cellClicked(elCell, i, j, ev) {
 
         // empty cells clicks
         if (cell.isMine === false && cell.isShown === false) {
+            gSuccess.play()
+
+            // pushes to undo array of objects
+            var cellCopy = JSON.parse(JSON.stringify(cell))
+            gUndoActions.push(cellCopy)
+            ////////////////////////////////////////////
+
             cell.isShown = true
+            
             if (cell.minesAroundCount === 0) {
-                // elCell.innerHTML = ' '
-                expandShown(gBoard, elCell, i, j)
+                fullExpandShown(gBoard, elCell, i, j)
+                
+                // for Undo 
+                gUndoActions.push(gNebs)
+                ////////////////////////////////////////////
+                
                 emptyCellClicked(elCell, cell)
+                
             } else {
                 emptyCellClicked(elCell, cell)
             }
@@ -54,16 +99,26 @@ function cellClicked(elCell, i, j, ev) {
         // Mines clicks
         if (cell.isMine === true) {
             gMineExplode.play()
+
+            // pushes to undo array of objects
+            var cellCopy = JSON.parse(JSON.stringify(cell))
+            gUndoActions.push(cellCopy)
+            ////////////////////////////////////////////
+
             gGame.minesExploded++
             gLevel.lives--
             cell.isShown = true
+
             elCell.innerText = gMINE
             elCell.classList.add('mine')
-            if (gLevel.lives === -1) {
+
+            var lives = '❤️'.repeat(gLevel.lives)
+            document.querySelector('span.lives').innerText = `Lives Left: ${lives}`
+
+            if (gLevel.lives === 0) {
                 onGameOver()
                 return
             }
-            document.querySelector('span.lives').innerText = `🧡 Left: ${gLevel.lives}`
         }
 
     }
@@ -75,6 +130,7 @@ function cellMarked(elCell, cell) {
             gError.play()
             return
         }
+
         cell.isMarked = true
         elCell.innerHTML = '🏴‍☠️'
         gGame.markedCount++
@@ -87,21 +143,11 @@ function cellMarked(elCell, cell) {
 }
 
 function emptyCellClicked(elCell, cell) {
-    if (!gGame.isHintOn) gGame.shownCount++
     elCell.innerText = (cell.minesAroundCount === 0) ? '' : cell.minesAroundCount
+    if (!gGame.isHintOn) gGame.shownCount++
+    else if (cell.isMine === true) elCell.innerText = gMINE
     classListChange(elCell)
 
     // Hint mode
     hintModeTimeOut(elCell)
-}
-
-function hintModeTimeOut(elCell) {
-    // Hint mode
-    if (gGame.isHintOn) {
-        setTimeout(() => {
-            elCell.innerHTML = ''
-            elCell.classList.remove('shown')
-            elCell.classList.add('hidden')
-        }, 1300)
-    }
 }

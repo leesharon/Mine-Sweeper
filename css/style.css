@@ -1,13 +1,15 @@
 
 
 html, body {
-    min-height: 100%;
+    min-height: 130%;
     height: auto; 
+    margin:0px;
+    padding: 0px;
 }
 
 body {
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.2em;
     background-image: linear-gradient( to top, rgba(255, 255, 255, 0.594), #3F3241);
     background-repeat: no-repeat;
     background-size: auto; 
@@ -17,14 +19,15 @@ body {
 h1 {
     color: rgb(32, 29, 29);
     font-style: italic;
-    margin-bottom: 100px;
+    margin-bottom: 25px;
 }
 
-button:hover {
+.btn-lvl:hover, .btn-hint:hover {
     background-image: linear-gradient(#eeb76f, rgb(217, 174, 125));
+    font-size: 1.2em;
 }
 
-.btn-lvl {
+.btn-lvl, .safe-click, .btn-hint, .btn-set-mines, .btn-7boom {
     cursor: pointer;
     padding: 10px;
     border: none;
@@ -32,13 +35,52 @@ button:hover {
     display: inline-block;
     margin-bottom: 20px;
     margin-right: 15px;
-    background-image: linear-gradient(#F3A846, rgb(217, 174, 125));
     font-family: fantasy;
     font-size: 1em ;
+    width: 20%;
+    display: block;
+    margin: auto;
+    margin-bottom: 12px;
+    
 }
 
-.btn-hint {
-    width: 15%;
+.btn-lvl, .btn-hint, .btn-set-mines {
+    background-image: linear-gradient(#F3A846, rgb(217, 174, 125));
+    transition: font-size 0.6s;
+   
+}
+
+.btn-set-mines:hover {
+    background-image: linear-gradient(#eeb76f, rgb(217, 174, 125));
+    font-size: 0.91em;
+}
+
+.safe-click-target, .safe-click {
+    background-image: linear-gradient(rgb(71, 71, 241), rgb(125, 196, 217));
+    transition: font-size 0.6s;
+    /* -webkit-transition: background-image 0.6s ease; */
+}
+
+.btn-set-mines {
+    font-size: 0.85em;
+}
+
+.btn-7boom {
+    background-image: linear-gradient(#FF7400, rgb(125, 196, 217));
+}
+
+span.safe-click-span {
+    font-size: 0.7em;
+    position: relative;
+    bottom: 10px;
+    padding: 0;
+    margin: 0;
+}
+
+.safe-click:hover {
+    font-size: 1.2em;
+    /* background-color: #3f3042; */
+    /* background-image: linear-gradient(rgb(17, 17, 22)rgb(168, 218, 233)7); */
 }
 
 div.hint {
@@ -61,6 +103,15 @@ div.hint {
     display: block;
     font-size: 1.5em;
     cursor: pointer;
+    margin-top: 20px;
+}
+
+.undo {
+    font-size: 2em;
+    position: absolute;
+    left: 36%;
+    top: 47%;
+    cursor: pointer;
 }
 
 table {
@@ -72,8 +123,8 @@ table {
     border-radius: 10px;
     cursor: pointer;
     border: 2px black solid;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
 }
 
 .cell:hover {
@@ -88,10 +139,21 @@ table {
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.594), #a06faa);
 }
 
+.mines-set {
+    display: none;
+    font-size: 0.85em;
+}
+
 .lives {
     position: absolute;
-    right: 29%;
-    margin-top: 20px;
+    right:24%;
+    margin-top: 30px;
+}
+
+.best-score {
+    position: absolute;
+    left:23%;
+    margin-top: 30px;
 }
 
 .mine {
@@ -101,5 +163,5 @@ table {
 footer {
     position: fixed;
     bottom: 40px;
-    left: 15%;
+    left: 40px;
 }

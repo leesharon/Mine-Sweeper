@@ -4,11 +4,17 @@
 window.addEventListener("contextmenu", e => e.preventDefault());
 
 const gMINE = '💣'
+const gUndoActions = []
+var gNebs = []
 var gBoard
+var gHintIntervalId
 
+// Game Sounds
 const gMineExplode = new Audio('audio/mine.mp3')
 const gError = new Audio('audio/error.mp3')
 const gVictory = new Audio('audio/victory.mp3')
+const gSuccess = new Audio('audio/success.mp3')
+const gMineSet = new Audio('audio/mine-set.mp3')
 
 const gLevel = {
     size: 4,
@@ -17,7 +23,7 @@ const gLevel = {
     lives: 1
 }
 
-const gGame = {
+var gGame = {
     isOn: false,
     isOver: false,
     shownCount: 0,
@@ -26,12 +32,17 @@ const gGame = {
     secsPassed: 0,
     hintCount: 3,
     isHintOn: false,
-    gameFace: ['🙂', '😎', '🥺']
+    gameFace: ['🙂', '😎', '🥺'],
+    safeClicks: 3,
+    userSetMines: false,
+    manuallyPlacedMines: 0,
+    is7Boom: false
 }
 
 function initGame() {
     gBoard = buildBoard()
     renderBoard(gBoard)
+    setBestScoreDisplay()
     console.log(gBoard)
 }
 
@@ -64,6 +75,7 @@ function renderBoard(board) {
 
             if (cell.isShown === true) {
                 if (cell.isMine === true) tdContent = gMINE
+                else if (cell.minesAroundCount === 0) tdContent = ''
                 else tdContent = cell.minesAroundCount
             }
 
@@ -95,7 +107,19 @@ function isGameWin() {
     gGame.isOn = false
     gGame.isOver = true
 
-    console.log('You win!!');
+    // Sets the best score on the local storage
+    var score = document.querySelector('.timerDisplay').innerText
+    var scoreNum = +score.replace(':', '')
+
+    // checks if any score was stored already or not
+    if (localStorage.getItem(`best${gLevel.level}Score`)) {
+        var bestScore = +localStorage.getItem(`best${gLevel.level}Score`).replace(':', '')
+        if (scoreNum < bestScore) {
+            localStorage.setItem(`best${gLevel.level}Score`, score)
+        }
+    } else {
+        localStorage.setItem(`best${gLevel.level}Score`, score)
+    }
 
     gVictory.play()
     revealMines()
@@ -112,41 +136,21 @@ function onGameOver() {
     document.querySelector('span.smiley').innerText = gGame.gameFace[2]
 }
 
-// changes level difficulty by pressing the button
-function changeLevel(elBtn) {
-    switch (gLevel.level) {
-        case 'Beginner':
-            gLevel.level = 'Intermediate'
-            gLevel.mines = 12
-            gLevel.size = 8
-            gLevel.lives = 3
-            document.querySelector('span.lives').innerText = `🧡 Left: ${gLevel.lives}`
-            break
-        case 'Intermediate':
-            gLevel.level = 'Professional'
-            gLevel.mines = 30
-            gLevel.size = 12
-            break
-        case 'Professional':
-            gLevel.level = 'Beginner'
-            gLevel.mines = 2
-            gLevel.size = 4
-            gLevel.lives = 1
-            document.querySelector('span.lives').innerText = `🧡 Left: ${gLevel.lives}`
-            break
-    }
-
-    restartGame()
-    elBtn.innerHTML = gLevel.level
-}
-
 function classListChange(elCell) {
-    elCell.classList.remove('hidden')
-    elCell.classList.add('shown')
+    if (elCell.classList.contains('hidden')) {
+        elCell.classList.remove('hidden')
+        elCell.classList.add('shown')
+    } else {
+        elCell.classList.add('hidden')
+        elCell.classList.remove('shown')
+    }
 }
 
 function restartGame(elSmiley) {
     if (elSmiley) elSmiley.innerHTML = gGame.gameFace[0]
+    else {
+        document.querySelector('.smiley').innerHTML = gGame.gameFace[0]
+    }
     gLevel.lives = (gLevel.level === 'Beginner') ? 1 : 3
     gGame.isOn = false
     gGame.isOver = false
@@ -154,18 +158,22 @@ function restartGame(elSmiley) {
     gGame.markedCount = 0
     gGame.minesExploded = 0
     gGame.hintCount = 3
+    gGame.isHintOn = false
+    gGame.is7Boom = false
+    document.querySelector('.safe-click-span').innerText = `3 Clicks Available`
+    gGame.safeClicks = 3
+    document.querySelector('div.hint').style.backgroundColor = 'red'
+    var lives = '❤️'.repeat(gLevel.lives)
+    document.querySelector('span.lives').innerText = `Lives Left: ${lives}`
+    document.querySelector('.btn-7boom').innerText = '7 BOOM Mode'
     stopTimer()
     resetTimer()
     initGame()
 }
 
-function activateHint(elBtn) {
-    if (gGame.hintCount === 0) {
-        gError.play()
-        return
-    }
-    gGame.hintCount--
-    gGame.isHintOn = true
-    elBtn.querySelector('div').style.backgroundColor = 'green'
-
+function setBestScoreDisplay() {
+    var bestScore = localStorage.getItem(`best${gLevel.level}Score`)
+    var elScoreSpan = document.querySelector('.best-score')
+    if (!bestScore) elScoreSpan.innerText = 'Best Score:'
+    else elScoreSpan.innerText = `Best Score: ${bestScore}`
 }
